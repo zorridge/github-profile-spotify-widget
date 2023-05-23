@@ -100,7 +100,7 @@ def loadImageB64(url):
     return b64encode(response.content).decode("ascii")
 
 
-def makeSVG(data, background_color, border_color):
+def makeSVG(data, background_color, border_color, title_background_color):
     barCount = 84
     contentBar = "".join(["<div class='bar'></div>" for i in range(barCount)])
     barCSS = barGen(barCount)
@@ -136,7 +136,8 @@ def makeSVG(data, background_color, border_color):
         "image": image,
         "status": currentStatus,
         "background_color": background_color,
-        "border_color": border_color
+        "border_color": border_color,
+        "title_background_color": title_background_color
     }
 
     return render_template(getTemplate(), **dataDict)
@@ -146,11 +147,12 @@ def makeSVG(data, background_color, border_color):
 @app.route("/<path:path>")
 @app.route('/with_parameters')
 def catch_all(path):
-    background_color = request.args.get('background_color') or "181414"
+    background_color = request.args.get('background_color') or "121212"
     border_color = request.args.get('border_color') or "181414"
+    title_background_color = request.args.get('title_background_color') or "121212"
 
     data = nowPlaying()
-    svg = makeSVG(data, background_color, border_color)
+    svg = makeSVG(data, background_color, border_color, title_background_color)
 
     resp = Response(svg, mimetype="image/svg+xml")
     resp.headers["Cache-Control"] = "s-maxage=1"
